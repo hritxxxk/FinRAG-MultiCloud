@@ -1,0 +1,21 @@
+# Core RAG Framework
+llama-index
+
+# For PDF and Web Loading
+pypdf
+beautifulsoup4
+
+# Embedding Model
+sentence-transformers
+
+# Vector DB
+chromadb
+
+# API Framework
+fastapi
+uvicorn[standard]
+
+# Utilities
+python-dotenv
+requests
+boto3 # We'll need this eventually for AWS, good to have it here
