@@ -1,6 +1,9 @@
 # Core RAG Framework
 llama-index
 
+# Integrations
+llama-index-embeddings-huggingface
+
 # For PDF and Web Loading
 pypdf
 beautifulsoup4
@@ -18,4 +21,4 @@ uvicorn[standard]
 # Utilities
 python-dotenv
 requests
-boto3 # We'll need this eventually for AWS, good to have it here
+boto3
