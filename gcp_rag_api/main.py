@@ -69,3 +69,47 @@ def ingest_data(data: List[Dict[str, Any]]):
         # If anything goes wrong during ingestion, return a detailed error.
         print(f"Error during ingestion: {e}")
         raise HTTPException(status_code=500, detail=f"An internal error occurred during data ingestion: {e}")
+    
+    # gcp_rag_api/main.py (add these imports and the new endpoint)
+
+# ... (keep existing imports)
+from fastapi import FastAPI, HTTPException, Query
+# ...
+
+# Import the new function from rag_core
+from .rag_core import retrieve_relevant_chunks
+
+# ... (keep all the existing app, db_client, and endpoint code) ...
+
+
+# --- NEW QUERY ENDPOINT ---
+@app.get("/query", tags=["RAG Query"])
+def perform_query(
+    query: str = Query(..., min_length=3, description="The user's question to the RAG system."),
+    top_k: int = Query(3, ge=1, le=10, description="The number of relevant chunks to retrieve.")
+):
+    """
+    Receives a user query, retrieves relevant context from the vector DB,
+    and returns it. This is the "Retrieval" part of RAG.
+    """
+    if not query:
+        raise HTTPException(status_code=400, detail="Query cannot be empty.")
+
+    try:
+        print(f"Performing query for: '{query}' with top_k={top_k}")
+        
+        # Use our core retrieval function
+        retrieved_context = retrieve_relevant_chunks(
+            query=query, 
+            db_client=db_client, 
+            n_results=top_k
+        )
+        
+        return {
+            "status": "success",
+            "query": query,
+            "retrieved_context": retrieved_context
+        }
+    except Exception as e:
+        print(f"Error during query: {e}")
+        raise HTTPException(status_code=500, detail=f"An internal error occurred during query: {e}")
