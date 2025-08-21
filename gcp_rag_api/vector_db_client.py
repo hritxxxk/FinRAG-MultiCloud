@@ -71,3 +71,28 @@ class ChromaDBClient:
         if not self.collection:
             return 0
         return self.collection.count()
+    
+
+
+    def query_collection(self, query_embedding: List[float], n_results: int = 5) -> List[Dict[str, Any]]:
+        """
+        Queries the collection to find the most similar documents to a given embedding.
+
+        Args:
+            query_embedding (List[float]): The embedding vector of the user's query.
+            n_results (int): The number of top similar documents to return.
+
+        Returns:
+            List[Dict[str, Any]]: A list of the most relevant document chunks.
+        """
+        if not self.collection:
+            raise ValueError("Collection not initialized.")
+
+        print(f"Querying collection '{self.collection.name}' for {n_results} results...")
+        
+        results = self.collection.query(
+            query_embeddings=[query_embedding], # Note: ChromaDB expects a list of embeddings
+            n_results=n_results
+        )
+        
+        return results
